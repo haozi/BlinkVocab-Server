@@ -125,35 +125,61 @@ async function main() {
   })
   console.log(`✓ Added dictionary to user`)
 
-  // Create sample user word records (for some words)
-  const sampleWords = words.slice(0, 5)
-  await Promise.all(
-    sampleWords.map((word) =>
+  // Create sample user word records with varied statuses
+  const allWords = words
+  const wordStatuses = [
+    { word: allWords[0], status: 'new' as const, daysDue: -2 }, // Overdue
+    { word: allWords[1], status: 'learning' as const, daysDue: 0 }, // Due today
+    { word: allWords[2], status: 'learning' as const, daysDue: 1 }, // Tomorrow
+    { word: allWords[3], status: 'review' as const, daysDue: 3 }, // 3 days
+    { word: allWords[4], status: 'review' as const, daysDue: 5 }, // 5 days
+    { word: allWords[5], status: 'mastered' as const, daysDue: 7 }, // Mastered
+  ]
+
+  const userWords = await Promise.all(
+    wordStatuses.map((item) =>
       prisma.userWord.create({
         data: {
           userId: user.id,
-          wordId: word.id,
-          status: 'learning',
-          stage: 1,
-          nextDueAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
+          wordId: item.word.id,
+          status: item.status,
+          stage: item.status === 'new' ? 0 : item.status === 'learning' ? 1 : item.status === 'review' ? 2 : 3,
+          nextDueAt: new Date(Date.now() + item.daysDue * 24 * 60 * 60 * 1000),
         },
       }),
     ),
   )
-  console.log(`✓ Created 5 sample user-word records`)
+  console.log(`✓ Created 6 sample user-word records with varied statuses`)
 
-  // Create sample events for first word
-  if (sampleWords.length > 0) {
-    await prisma.userWordEvent.create({
-      data: {
-        userId: user.id,
-        wordId: sampleWords[0].id,
-        type: 'view',
-        payload: { page: 'dictionary-list' },
-      },
-    })
-    console.log(`✓ Created sample user word event`)
+  // Create sample events across multiple days
+  const eventDates = [
+    { daysAgo: 6, count: 1 },
+    { daysAgo: 5, count: 2 },
+    { daysAgo: 4, count: 1 },
+    { daysAgo: 2, count: 3 },
+    { daysAgo: 1, count: 2 },
+    { daysAgo: 0, count: 4 }, // Today
+  ]
+
+  let eventCount = 0
+  for (const { daysAgo, count } of eventDates) {
+    const eventDate = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000)
+    for (let i = 0; i < count; i++) {
+      const userWord = userWords[i % userWords.length]
+      await prisma.userWordEvent.create({
+        data: {
+          userId: user.id,
+          wordId: userWord.wordId,
+          userWordId: userWord.id,
+          type: ['view', 'correct', 'incorrect', 'skip'][i % 4],
+          createdAt: eventDate,
+          payload: { accuracy: Math.random() > 0.5 ? 1 : 0 },
+        },
+      })
+      eventCount++
+    }
   }
+  console.log(`✓ Created ${eventCount} sample user word events across 6 days`)
 
   console.log('✨ Seeding complete!')
 }

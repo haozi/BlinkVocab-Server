@@ -1,0 +1,45 @@
+{
+  "name": "blink-vocab-server",
+  "version": "0.0.0",
+  "private": true,
+  "description": "BlinkVocab - Backend server for Chrome extension",
+  "scripts": {
+    "build": "next build",
+    "db:migrate": "dotenv -e .env.local -- prisma migrate dev",
+    "dev": "next dev",
+    "format": "prettier --write --ignore-unknown .",
+    "postinstall": "pnpm run prisma:generate",
+    "lint": "eslint",
+    "prepare": "husky install",
+    "prisma:generate": "prisma generate",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "next": "16.1.6",
+    "pg": "^8.13.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.18",
+    "@types/node": "25.2.1",
+    "@types/pg": "^8.15.5",
+    "@types/react": "19.2.13",
+    "@types/react-dom": "19.2.3",
+    "babel-plugin-react-compiler": "1.0.0",
+    "dotenv": "^16.4.5",
+    "dotenv-cli": "^11.0.0",
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.1.6",
+    "husky": "^9.1.7",
+    "prettier": "^3.8.1",
+    "prettier-plugin-lint-md": "^1.0.1",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "prisma": "^7.3.0",
+    "tailwindcss": "4.1.18",
+    "typescript": "5.9.3"
+  }
+}

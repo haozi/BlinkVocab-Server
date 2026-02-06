@@ -1,0 +1,23 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": true,
+    "**/tsconfig.*": true,
+    "vite.config.ts": true,
+    "eslint.config.js": true,
+    "LICENSE": true,
+    "pnpm-lock.yaml": true,
+    ".gitignore": true,
+    ".husky": true,
+    ".node-version": true,
+    ".prettierignore": true,
+    ".prettierrc": true,
+    ".prettierrc.lint-only.json": true,
+    "components.json": true,
+    "stylus-supremacy.json": true,
+    ".npmrc": true,
+    "pnpm-workspace.yaml": true,
+  }
+}

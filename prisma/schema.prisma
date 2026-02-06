@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// BlinkVocab Server Schema v1
+// Complete vocabulary learning management system
 
 generator client {
   provider = "prisma-client-js"
@@ -10,22 +10,182 @@ datasource db {
   provider = "postgresql"
 }
 
+// ============================================================================
+// USERS & AUTHENTICATION
+// ============================================================================
+
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id String @id @default(cuid())
+  email String? @unique
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  // Relations
+  userWords UserWord[]
+  userWordEvents UserWordEvent[]
+  userDictionaries UserDictionary[]
 }
 
-model Post {
-  id    Int     @id @default(autoincrement())
-  title String
-  content String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+// ============================================================================
+// WORDS & VOCABULARY
+// ============================================================================
+
+model Word {
+  id String @id @default(cuid())
+  lemma String
+  language String @default("en")
+  source WordSource @default(seed)
+  createdAt DateTime @default(now())
+
+  // Relations
+  senses WordSense[]
+  tags WordTag[]
+  userWords UserWord[]
+  userWordEvents UserWordEvent[]
+  dictionaryWords DictionaryWord[]
+
+  // Indexes
+  @@unique([lemma, language], map: "words_lemma_language_key")
+  @@index([language])
+  @@index([source])
+}
+
+enum WordSource {
+  seed
+  custom
+}
+
+model WordSense {
+  id String @id @default(cuid())
+  wordId String
+  pos String?
+  definition String
+  examples Json? // Array of example sentences
+  order Int @default(0)
+
+  // Relations
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@index([wordId])
+}
+
+model Tag {
+  id String @id @default(cuid())
+  name String @unique
+  type TagType
+
+  // Relations
+  words WordTag[]
+
+  @@index([type])
+}
+
+enum TagType {
+  dictionary
+  topic
+  level
+}
+
+model WordTag {
+  wordId String
+  tagId String
+
+  // Relations
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([wordId, tagId])
+  @@index([tagId])
+}
+
+// ============================================================================
+// DICTIONARIES
+// ============================================================================
+
+model Dictionary {
+  id String @id @default(cuid())
+  name String @unique
+  description String?
+  language String
+  createdAt DateTime @default(now())
+
+  // Relations
+  words DictionaryWord[]
+  users UserDictionary[]
+
+  @@index([language])
+}
+
+model DictionaryWord {
+  dictionaryId String
+  wordId String
+
+  // Relations
+  dictionary Dictionary @relation(fields: [dictionaryId], references: [id], onDelete: Cascade)
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@id([dictionaryId, wordId])
+  @@index([wordId])
+}
+
+model UserDictionary {
+  userId String
+  dictionaryId String
+  addedAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dictionary Dictionary @relation(fields: [dictionaryId], references: [id], onDelete: Cascade)
+
+  @@id([userId, dictionaryId])
+  @@index([addedAt])
+}
+
+// ============================================================================
+// USER LEARNING PROGRESS
+// ============================================================================
+
+model UserWord {
+  id String @id @default(cuid())
+  userId String
+  wordId String
+  status UserWordStatus @default(new)
+  stage Int @default(0)
+  nextDueAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  events UserWordEvent[]
+
+  @@unique([userId, wordId], map: "user_words_user_id_word_id_key")
+  @@index([userId, nextDueAt])
+  @@index([status])
+}
+
+enum UserWordStatus {
+  new
+  learning
+  review
+  mastered
+  ignored
+}
+
+model UserWordEvent {
+  id String @id @default(cuid())
+  userId String
+  wordId String
+  userWordId String?
+  type String // 'view', 'correct', 'incorrect', 'skip', etc.
+  payload Json? // Additional event data
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  userWord UserWord? @relation(fields: [userWordId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userWordId])
 }

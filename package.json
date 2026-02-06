@@ -6,6 +6,9 @@
   "scripts": {
     "build": "next build",
     "db:migrate": "dotenv -e .env.local -- prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:seed": "dotenv -e .env.local -- ts-node prisma/seed.ts",
     "dev": "next dev",
     "format": "prettier --write --ignore-unknown .",
     "postinstall": "pnpm run prisma:generate",
@@ -40,6 +43,7 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "prisma": "^7.3.0",
     "tailwindcss": "4.1.18",
+    "ts-node": "^10.9.2",
     "typescript": "5.9.3"
   }
 }

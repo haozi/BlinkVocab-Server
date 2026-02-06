@@ -5,17 +5,18 @@ export const runtime = 'nodejs'
 
 /**
  * GET /api/hello
- * 返回问候消息，并从数据库读取用户列表
+ * Returns greeting message and retrieves words from the database
  */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const name = searchParams.get('name') || 'World'
 
-    // 从数据库读取所有用户
-    const users = await prisma.user.findMany({
+    // Retrieve sample words from database
+    const words = await prisma.word.findMany({
+      take: 5,
       include: {
-        posts: true,
+        senses: true,
       },
     })
 
@@ -24,8 +25,8 @@ export async function GET(request: NextRequest) {
         message: `Hello, ${name}!`,
         timestamp: new Date().toISOString(),
         database: {
-          totalUsers: users.length,
-          users: users,
+          totalWords: words.length,
+          words: words,
         },
       },
       { status: 200 },
@@ -34,8 +35,8 @@ export async function GET(request: NextRequest) {
     console.error('Database error:', error)
     return NextResponse.json(
       {
-        error: '数据库查询失败',
-        message: error instanceof Error ? error.message : '未知错误',
+        error: 'Database query failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 },
     )
@@ -44,36 +45,43 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/hello
- * 创建新用户
+ * Creates a new word in the database
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, email } = body
+    const { lemma, definition, language = 'en' } = body
 
-    if (!email) {
+    if (!lemma || !definition) {
       return NextResponse.json(
-        { error: '缺少必要字段: email' },
+        { error: 'Missing required fields: lemma, definition' },
         { status: 400 },
       )
     }
 
-    // 创建新用户
-    const user = await prisma.user.create({
+    // Create new word with sense
+    const word = await prisma.word.create({
       data: {
-        email,
-        name: name || null,
+        lemma,
+        language,
+        source: 'custom',
+        senses: {
+          create: {
+            definition,
+            order: 0,
+          },
+        },
       },
       include: {
-        posts: true,
+        senses: true,
       },
     })
 
     return NextResponse.json(
       {
         success: true,
-        message: `用户 ${name || email} 创建成功!`,
-        user: user,
+        message: `Word "${lemma}" created successfully!`,
+        word: word,
       },
       { status: 201 },
     )
@@ -82,15 +90,18 @@ export async function POST(request: NextRequest) {
 
     if (
       error instanceof Error &&
-      error.message.includes('Unique constraint failed')
+      error.message.includes('Unique constraint')
     ) {
-      return NextResponse.json({ error: '该 email 已存在' }, { status: 409 })
+      return NextResponse.json(
+        { error: 'Word with this lemma and language already exists' },
+        { status: 409 },
+      )
     }
 
     return NextResponse.json(
       {
-        error: '创建用户失败',
-        message: error instanceof Error ? error.message : '未知错误',
+        error: 'Create word failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 },
     )

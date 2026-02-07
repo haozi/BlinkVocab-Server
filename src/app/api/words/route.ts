@@ -1,12 +1,12 @@
-import { prisma } from '@/lib/prisma'
 import { extractUserId, unauthorizedResponse } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 import {
   getWordsQuerySchema,
   getWordsResponseSchema,
   type GetWordsResponse,
 } from '@/types/words'
-import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
+import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 
@@ -127,7 +127,7 @@ export async function GET(request: NextRequest) {
           incorrect_count: bigint
         }>
       >`
-        SELECT 
+        SELECT
           uw.*,
           COALESCE(COUNT(uwe.id) FILTER (WHERE uwe.type = 'incorrect' AND uwe."createdAt" >= ${thirtyDaysAgo}), 0) as incorrect_count
         FROM "UserWord" uw
@@ -170,7 +170,9 @@ export async function GET(request: NextRequest) {
 
       // Sort to match the incorrect_count order
       const orderMap = new Map(userWordIds.map((id, index) => [id, index]))
-      userWords.sort((a, b) => (orderMap.get(a.id) || 0) - (orderMap.get(b.id) || 0))
+      userWords.sort(
+        (a, b) => (orderMap.get(a.id) || 0) - (orderMap.get(b.id) || 0),
+      )
     } else {
       // Standard sorting
       switch (sort) {

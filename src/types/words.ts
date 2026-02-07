@@ -11,7 +11,10 @@ const wordTextSchema = z
   .trim()
   .min(2, 'Word must be at least 2 characters')
   .max(30, 'Word must be at most 30 characters')
-  .regex(/^[a-zA-Z0-9-]+$/, 'Word must contain only letters, numbers, and hyphens')
+  .regex(
+    /^[a-zA-Z0-9-]+$/,
+    'Word must contain only letters, numbers, and hyphens',
+  )
   .toLowerCase()
 
 export const addManualWordRequestSchema = z.object({
@@ -38,7 +41,10 @@ export const getWordsQuerySchema = z.object({
   status: z.string().optional(), // Comma-separated: 'new,learning,review'
   dictionaryId: z.string().cuid().optional(),
   tagId: z.string().cuid().optional(),
-  sort: z.enum(['next_due', 'recent', 'added', 'wrong_most']).optional().default('next_due'),
+  sort: z
+    .enum(['next_due', 'recent', 'added', 'wrong_most'])
+    .optional()
+    .default('next_due'),
   page: z.coerce.number().int().positive().optional().default(1),
   pageSize: z.coerce.number().int().positive().max(100).optional().default(20),
 })
@@ -86,3 +92,54 @@ export const getWordsResponseSchema = z.object({
 })
 
 export type GetWordsResponse = z.infer<typeof getWordsResponseSchema>
+
+/**
+ * GET /api/words/:wordId response
+ */
+export const wordDetailResponseSchema = z.object({
+  word: z.object({
+    wordId: z.string(),
+    lemma: z.string(),
+    senses: z.array(
+      z.object({
+        id: z.string(),
+        pos: z.string().nullable(),
+        definition: z.string(),
+        examples: z.any().nullable(), // JSON array
+        order: z.number().int().nonnegative(),
+      }),
+    ),
+    tags: z.array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        type: z.enum(['dictionary', 'topic', 'level']),
+      }),
+    ),
+    dictionaries: z.array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        description: z.string().nullable(),
+      }),
+    ),
+  }),
+  user: z
+    .object({
+      userWordId: z.string(),
+      status: z.enum(['new', 'learning', 'review', 'mastered', 'ignored']),
+      stage: z.number().int().nonnegative(),
+      nextDueAt: z.date().nullable(),
+    })
+    .nullable(),
+  events: z.array(
+    z.object({
+      id: z.string(),
+      type: z.string(),
+      createdAt: z.date(),
+      payload: z.any().nullable(), // JSON
+    }),
+  ),
+})
+
+export type WordDetailResponse = z.infer<typeof wordDetailResponseSchema>

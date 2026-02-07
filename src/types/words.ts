@@ -30,3 +30,59 @@ export const addManualWordResponseSchema = z.object({
 })
 
 export type AddManualWordResponse = z.infer<typeof addManualWordResponseSchema>
+
+/**
+ * GET /api/words query parameters
+ */
+export const getWordsQuerySchema = z.object({
+  status: z.string().optional(), // Comma-separated: 'new,learning,review'
+  dictionaryId: z.string().cuid().optional(),
+  tagId: z.string().cuid().optional(),
+  sort: z.enum(['next_due', 'recent', 'added', 'wrong_most']).optional().default('next_due'),
+  page: z.coerce.number().int().positive().optional().default(1),
+  pageSize: z.coerce.number().int().positive().max(100).optional().default(20),
+})
+
+export type GetWordsQuery = z.infer<typeof getWordsQuerySchema>
+
+/**
+ * GET /api/words response item
+ */
+export const wordItemSchema = z.object({
+  wordId: z.string(),
+  lemma: z.string(),
+  status: z.enum(['new', 'learning', 'review', 'mastered', 'ignored']),
+  stage: z.number().int().nonnegative(),
+  nextDueAt: z.date().nullable(),
+  lastEventAt: z.date().nullable(),
+  dictionaries: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+    }),
+  ),
+  tags: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      type: z.enum(['dictionary', 'topic', 'level']),
+    }),
+  ),
+})
+
+export type WordItem = z.infer<typeof wordItemSchema>
+
+/**
+ * GET /api/words response
+ */
+export const getWordsResponseSchema = z.object({
+  items: z.array(wordItemSchema),
+  pagination: z.object({
+    page: z.number().int().positive(),
+    pageSize: z.number().int().positive(),
+    total: z.number().int().nonnegative(),
+    totalPages: z.number().int().nonnegative(),
+  }),
+})
+
+export type GetWordsResponse = z.infer<typeof getWordsResponseSchema>

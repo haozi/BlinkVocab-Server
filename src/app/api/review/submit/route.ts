@@ -1,11 +1,11 @@
-import { prisma } from '@/lib/prisma'
 import { extractUserId, unauthorizedResponse } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 import {
+  getNextDueDate,
+  getNextStage,
   reviewSubmitRequestSchema,
   reviewSubmitResponseSchema,
   type ReviewSubmitResponse,
-  getNextDueDate,
-  getNextStage,
 } from '@/types/review'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -77,12 +77,21 @@ export async function POST(request: NextRequest) {
       const newStage = getNextStage(userWord.stage, correct)
       const nextDueAt = getNextDueDate(now, userWord.stage, correct)
 
+      // Determine new status based on stage
+      let newStatus = userWord.status
+      if (userWord.status === 'new' && correct) {
+        newStatus = 'learning'
+      } else if (newStage >= 2 && correct) {
+        newStatus = 'review'
+      }
+
       // Update user_word
       const updatedUserWord = await tx.userWord.update({
         where: { id: userWordId },
         data: {
           stage: newStage,
           nextDueAt,
+          status: newStatus,
         },
       })
 
@@ -92,9 +101,9 @@ export async function POST(request: NextRequest) {
           userId,
           wordId: userWord.wordId,
           userWordId,
-          type: correct ? 'correct' : 'incorrect',
+          type: correct ? 'answer_correct' : 'answer_wrong',
           payload: {
-            stage: userWord.stage,
+            oldStage: userWord.stage,
             newStage,
             correct,
           },

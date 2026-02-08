@@ -4,13 +4,19 @@ Backend API server for BlinkVocab Chrome Extension, built with Next.js, TypeScri
 
 ## Architecture
 
-**API-Only Backend**: This is a production-grade REST API service with no UI components. All routes are located in `src/app/api/**`.
+**Full-Stack Application**: This is a Next.js application with both API routes and Dashboard UI.
 
 - **Framework**: Next.js 16 with App Router
 - **Runtime**: Node.js (configured for all routes via `export const runtime = 'nodejs'`)
 - **Database**: PostgreSQL with Prisma 7 ORM (@prisma/adapter-pg)
 - **Language**: TypeScript (strict mode enabled)
+- **Styling**: Tailwind CSS 4
 - **Middleware**: Authentication header extraction and request context enrichment
+
+### Components
+
+1. **API Routes** (`src/app/api/**`): RESTful API endpoints for Chrome extension and dashboard
+2. **Dashboard UI** (`src/app/dashboard/**`): Web interface for vocabulary management
 
 ## Prerequisites
 
@@ -95,6 +101,21 @@ pnpm dev
 
 The server will start at `http://localhost:3000`
 
+### 6. Access Dashboard
+
+Open your browser and navigate to:
+
+```
+http://localhost:3000/dashboard
+```
+
+The dashboard provides:
+- **Overview**: Learning statistics and progress
+- **Words**: Browse and manage your vocabulary
+- **Market**: Dictionary marketplace (coming soon)
+
+**Note**: For MVP, the dashboard uses a dev user. Social login (Google, etc.) will be implemented in a future update.
+
 ## API Endpoints
 
 ### Health Check
@@ -153,20 +174,34 @@ src/
 │   ├── api/                    # API route handlers
 │   │   ├── health/
 │   │   │   └── route.ts       # Health check endpoint
-│   │   └── hello/
-│   │       └── route.ts       # Example endpoint with database
-│   └── favicon.ico
+│   │   ├── dashboard/
+│   │   │   └── overview/      # Dashboard overview API
+│   │   ├── words/             # Word management APIs
+│   │   ├── tasks/             # Daily tasks API
+│   │   ├── review/            # Review submission API
+│   │   └── market/            # Dictionary marketplace API
+│   ├── dashboard/             # Dashboard UI pages
+│   │   ├── layout.tsx         # Dashboard layout with navigation
+│   │   ├── page.tsx           # Dashboard entry (redirects to overview)
+│   │   ├── overview/          # Overview page
+│   │   ├── words/             # Words list and detail pages
+│   │   └── market/            # Dictionary marketplace page
+│   ├── layout.tsx             # Root layout
+│   ├── page.tsx               # Home page (redirects to dashboard)
+│   └── globals.css            # Global styles
 ├── middleware.ts               # Request authentication middleware
 ├── lib/
-│   └── prisma.ts              # PrismaClient singleton
-├── types/
-│   └── index.ts               # TypeScript type definitions
-└── global/
-    └── [config files]         # Shared configuration
+│   ├── prisma.ts              # PrismaClient singleton
+│   └── utils.ts               # Utility functions
+└── types/                     # TypeScript type definitions
+    ├── dashboard.ts
+    ├── words.ts
+    └── review.ts
 
 prisma/
 ├── schema.prisma              # Database schema
-└── migrations/                # Migration history
+├── migrations/                # Migration history
+└── seed.ts                    # Database seeding script
 ```
 
 ## Development Workflow

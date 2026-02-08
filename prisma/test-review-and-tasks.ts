@@ -1,9 +1,9 @@
 import { PrismaPg } from '@prisma/adapter-pg'
-import { Pool } from 'pg'
 import { PrismaClient } from '@prisma/client'
+import { Pool } from 'pg'
 
 // Copy SRS config inline to avoid @ alias import issues
-const SRS_INTERVALS_MINUTES = [10, 1440, 4320, 10080, 21600]
+const SRS_INTERVALS_MINUTES = [10, 1440, 4320, 10080, 21600, 43200]
 const MAX_STAGE = SRS_INTERVALS_MINUTES.length - 1
 
 function getNextDueDate(now: Date, stage: number, correct: boolean): Date {
@@ -23,7 +23,8 @@ function getNextStage(stage: number, correct: boolean): number {
   }
 }
 
-const connectionString = process.env.DATABASE_DIRECT_URL || process.env.DATABASE_URL
+const connectionString =
+  process.env.DATABASE_DIRECT_URL || process.env.DATABASE_URL
 
 if (!connectionString) {
   throw new Error('DATABASE_URL is not set')
@@ -86,8 +87,12 @@ async function testReviewAndTasks() {
 
     dueWords.forEach((uw: any) => {
       const now = new Date()
-      const minutes = Math.floor((now.getTime() - uw.nextDueAt.getTime()) / 60000)
-      console.log(`    - "${uw.word.lemma}" (stage: ${uw.stage}, ${minutes}min overdue)`)
+      const minutes = Math.floor(
+        (now.getTime() - uw.nextDueAt.getTime()) / 60000,
+      )
+      console.log(
+        `    - "${uw.word.lemma}" (stage: ${uw.stage}, ${minutes}min overdue)`,
+      )
     })
 
     newWords.forEach((uw: any) => {
@@ -125,9 +130,9 @@ async function testReviewAndTasks() {
         userId: user.id,
         wordId: testWord.wordId,
         userWordId: testWord.id,
-        type: 'correct',
+        type: 'answer_correct',
         payload: {
-          stage: oldStage,
+          oldStage: oldStage,
           newStage: expectedNewStage,
           correct: true,
         },
@@ -135,7 +140,9 @@ async function testReviewAndTasks() {
     })
 
     console.log(`  ✓ Stage updated: ${oldStage} → ${updatedUserWord.stage}`)
-    console.log(`  ✓ Due date pushed forward by ${SRS_INTERVALS_MINUTES[oldStage]} minutes`)
+    console.log(
+      `  ✓ Due date pushed forward by ${SRS_INTERVALS_MINUTES[oldStage]} minutes`,
+    )
 
     // Test 3: POST /api/review/submit - Wrong answer
     console.log('\n📋 Test 3: POST /api/review/submit (wrong answer)')
@@ -168,9 +175,9 @@ async function testReviewAndTasks() {
         userId: user.id,
         wordId: testWord2.wordId,
         userWordId: testWord2.id,
-        type: 'incorrect',
+        type: 'answer_wrong',
         payload: {
-          stage: oldStage2,
+          oldStage: oldStage2,
           newStage: expectedNewStage2,
           correct: false,
         },
@@ -190,7 +197,9 @@ async function testReviewAndTasks() {
       const now = new Date()
       const nextDue = getNextDueDate(now, stage, true)
       const expectedMinutes = SRS_INTERVALS_MINUTES[stage]
-      const actualMinutes = Math.round((nextDue.getTime() - now.getTime()) / 60000)
+      const actualMinutes = Math.round(
+        (nextDue.getTime() - now.getTime()) / 60000,
+      )
 
       console.log(
         `  Stage ${stage} (correct): ${actualMinutes} minutes (expected: ${expectedMinutes})`,
@@ -201,7 +210,9 @@ async function testReviewAndTasks() {
     const wrongMinutes = Math.round(
       (wrongDue.getTime() - new Date().getTime()) / 60000,
     )
-    console.log(`  Wrong answer (any stage): ${wrongMinutes} minutes (expected: 10)`)
+    console.log(
+      `  Wrong answer (any stage): ${wrongMinutes} minutes (expected: 10)`,
+    )
 
     // Test 5: Updated tasks list
     console.log('\n📋 Test 5: GET /api/tasks/today (after review)')
@@ -223,7 +234,7 @@ async function testReviewAndTasks() {
     const events = await client.userWordEvent.findMany({
       where: {
         userId: user.id,
-        type: { in: ['correct', 'incorrect'] },
+        type: { in: ['answer_correct', 'answer_wrong'] },
       },
       orderBy: { createdAt: 'desc' },
       take: 5,
@@ -232,7 +243,9 @@ async function testReviewAndTasks() {
     console.log(`  Recent review events: ${events.length}`)
     events.forEach((e: any) => {
       const payload = e.payload as any
-      console.log(`    - ${e.type}: stage ${payload?.stage} → ${payload?.newStage}`)
+      console.log(
+        `    - ${e.type}: stage ${payload?.oldStage} → ${payload?.newStage}`,
+      )
     })
 
     console.log('\n✨ All tests completed!\n')

@@ -27,13 +27,14 @@ async function main() {
   await prisma.dictionary.deleteMany()
   await prisma.user.deleteMany()
 
-  // Create seed user
+  // Create seed user with fixed ID for MVP development
   const user = await prisma.user.create({
     data: {
-      email: 'seed@blinkvocab.local',
+      id: 'dev-user-123',
+      email: 'dev@blinkvocab.local',
     },
   })
-  console.log(`✓ Created user: ${user.email}`)
+  console.log(`✓ Created user: ${user.email} (ID: ${user.id})`)
 
   // Create tags (for dictionary tagging)
   const dictTag = await prisma.tag.create({

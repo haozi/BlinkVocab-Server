@@ -2,9 +2,9 @@ import { z } from 'zod'
 
 /**
  * SRS (Spaced Repetition System) Configuration
- * Intervals in minutes
+ * Intervals in minutes: 10min, 1day, 3days, 1week, 15days, 30days
  */
-export const SRS_INTERVALS_MINUTES = [10, 1440, 4320, 10080, 21600]
+export const SRS_INTERVALS_MINUTES = [10, 1440, 4320, 10080, 21600, 43200]
 export const MAX_STAGE = SRS_INTERVALS_MINUTES.length - 1
 
 export const reviewSubmitRequestSchema = z.object({
@@ -29,7 +29,11 @@ export type ReviewSubmitResponse = z.infer<typeof reviewSubmitResponseSchema>
 /**
  * Get next due date based on correct/wrong and current stage
  */
-export function getNextDueDate(now: Date, stage: number, correct: boolean): Date {
+export function getNextDueDate(
+  now: Date,
+  stage: number,
+  correct: boolean,
+): Date {
   if (correct) {
     // Correct: use interval for current stage (before increment)
     const minutesToAdd = SRS_INTERVALS_MINUTES[Math.min(stage, MAX_STAGE)]

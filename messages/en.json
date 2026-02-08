@@ -1,0 +1,65 @@
+{
+  "common": {
+    "appName": "BlinkVocab",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry"
+  },
+  "nav": {
+    "overview": "Overview",
+    "words": "Words",
+    "market": "Market",
+    "settings": "Settings"
+  },
+  "overview": {
+    "title": "Overview",
+    "subtitle": "Your vocabulary learning progress at a glance",
+    "stats": {
+      "total": "Total Words",
+      "new": "New",
+      "learning": "Learning",
+      "review": "Review",
+      "mastered": "Mastered"
+    },
+    "due": {
+      "title": "Due Words",
+      "overdue": "Overdue",
+      "overdueDesc": "Past due date",
+      "dueToday": "Due Today",
+      "dueTodayDesc": "Review before end of day",
+      "total": "Total Due",
+      "reviewNow": "Review Now",
+      "allCaughtUp": "🎉 All caught up! No words due for review."
+    },
+    "activity": {
+      "title": "Activity",
+      "subtitle": "Last 7 days learning events",
+      "noActivity": "No activity in the last 7 days. Start learning to see your progress!"
+    },
+    "errorLoading": "Failed to load dashboard data. Please try again later."
+  },
+  "words": {
+    "title": "Words",
+    "subtitle": "Browse and manage your vocabulary",
+    "comingSoon": "Words list page will be implemented in S40c"
+  },
+  "market": {
+    "title": "Dictionary Market",
+    "subtitle": "Browse and add dictionaries to your learning plan",
+    "comingSoon": "Dictionary market page will be implemented later"
+  },
+  "wordDetail": {
+    "title": "Word Detail",
+    "wordId": "Word ID: {wordId}",
+    "comingSoon": "Word detail page will be implemented in S40d"
+  },
+  "user": {
+    "devMode": "Dev User",
+    "mvpMode": "MVP Mode"
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "zhHans": "简体中文"
+  }
+}

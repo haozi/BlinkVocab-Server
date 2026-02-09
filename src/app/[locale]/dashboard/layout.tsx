@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
@@ -24,20 +25,20 @@ export default async function DashboardLayout({
   const userT = await getTranslations('user')
 
   return (
-    <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-900">
+    <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+      <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-card">
         <div className="flex h-full flex-col">
           {/* Logo */}
-          <div className="flex h-16 items-center border-b border-zinc-200 px-6 dark:border-zinc-800">
+          <div className="flex h-16 items-center border-b border-border px-6">
             <Link
               href={withLocalePrefix('/dashboard', locale)}
               className="flex items-center gap-2"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white font-bold">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
                 B
               </div>
-              <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+              <span className="text-lg font-semibold text-foreground">
                 {commonT('appName')}
               </span>
             </Link>
@@ -49,22 +50,24 @@ export default async function DashboardLayout({
           </nav>
 
           {/* User info (MVP: dev user) */}
-          <div className="space-y-4 border-t border-zinc-200 p-4 dark:border-zinc-800">
+          <div className="space-y-4 border-t border-border p-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-200 text-sm font-medium dark:bg-zinc-800">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground">
                 D
               </div>
               <div className="flex-1 text-sm">
-                <div className="font-medium text-zinc-900 dark:text-zinc-50">
+                <div className="font-medium text-foreground">
                   {userT('devMode')}
                 </div>
-                <div className="text-zinc-500 dark:text-zinc-400">
+                <div className="text-muted-foreground">
                   {userT('mvpMode')}
                 </div>
               </div>
             </div>
 
-            <LocaleSwitcher />
+            <Suspense fallback={null}>
+              <LocaleSwitcher />
+            </Suspense>
           </div>
         </div>
       </aside>

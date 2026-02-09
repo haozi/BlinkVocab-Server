@@ -5,6 +5,11 @@
     "error": "Error",
     "retry": "Retry"
   },
+  "home": {
+    "title": "BlinkVocab",
+    "subtitle": "Learn vocabulary with spaced repetition.",
+    "cta": "Enter Dashboard"
+  },
   "nav": {
     "overview": "Overview",
     "words": "Words",

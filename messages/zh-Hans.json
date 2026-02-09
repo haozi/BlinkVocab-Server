@@ -5,6 +5,11 @@
     "error": "错误",
     "retry": "重试"
   },
+  "home": {
+    "title": "BlinkVocab",
+    "subtitle": "使用间隔重复高效学习词汇。",
+    "cta": "进入仪表板"
+  },
   "nav": {
     "overview": "概览",
     "words": "单词",

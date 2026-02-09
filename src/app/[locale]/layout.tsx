@@ -24,5 +24,9 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale)
 
-  return <NextIntlClientProvider>{children}</NextIntlClientProvider>
+  return (
+    <NextIntlClientProvider>
+      <div lang={locale}>{children}</div>
+    </NextIntlClientProvider>
+  )
 }

@@ -35,7 +35,7 @@ export function LocaleSwitcher() {
 
   return (
     <div className="space-y-2">
-      <div className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {t('label')}
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -51,8 +51,8 @@ export function LocaleSwitcher() {
               className={cn(
                 'rounded-md border px-2 py-1.5 text-center text-xs font-medium transition-colors',
                 isActive
-                  ? 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300'
-                  : 'border-zinc-200 text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800',
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground',
               )}
             >
               {t(localeLabelKey[targetLocale])}

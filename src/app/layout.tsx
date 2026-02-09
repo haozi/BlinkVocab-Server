@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { getLocale } from 'next-intl/server'
 import { defaultLocale } from '@/i18n/config'
 // import { Geist, Geist_Mono } from "next/font/google";
 import './globals.css'
@@ -19,15 +18,13 @@ export const metadata: Metadata = {
   description: 'Master vocabulary with spaced repetition',
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const locale = (await getLocale().catch(() => defaultLocale)) ?? defaultLocale
-
   return (
-    <html lang={locale}>
+    <html lang={defaultLocale}>
       <body className={`antialiased`}>{children}</body>
     </html>
   )

@@ -46,7 +46,34 @@
   "words": {
     "title": "Words",
     "subtitle": "Browse and manage your vocabulary",
-    "comingSoon": "Words list page will be implemented in S40c"
+    "errorLoading": "Failed to load words. Please try again later.",
+    "noWords": "No words found. Try adjusting your filters or add some words to get started.",
+    "overdue": "Overdue",
+    "stage": "Stage",
+    "nextDue": "Next due",
+    "status": {
+      "new": "New",
+      "learning": "Learning",
+      "review": "Review",
+      "mastered": "Mastered",
+      "ignored": "Ignored"
+    },
+    "filters": {
+      "status": "Filter by Status",
+      "sort": "Sort by",
+      "clear": "Clear filters"
+    },
+    "sort": {
+      "next_due": "Next Due",
+      "recent": "Recently Studied",
+      "added": "Recently Added",
+      "wrong_most": "Most Errors"
+    },
+    "pagination": {
+      "showing": "Showing {start}-{end} of {total} words",
+      "previous": "Previous",
+      "next": "Next"
+    }
   },
   "market": {
     "title": "Dictionary Market",

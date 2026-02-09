@@ -46,7 +46,34 @@
   "words": {
     "title": "单词",
     "subtitle": "浏览和管理您的词汇",
-    "comingSoon": "单词列表页面将在 S40c 中实现"
+    "errorLoading": "加载单词失败，请稍后重试。",
+    "noWords": "未找到单词。尝试调整筛选条件或添加一些单词开始学习。",
+    "overdue": "逾期",
+    "stage": "阶段",
+    "nextDue": "下次复习",
+    "status": {
+      "new": "新单词",
+      "learning": "学习中",
+      "review": "复习中",
+      "mastered": "已掌握",
+      "ignored": "已忽略"
+    },
+    "filters": {
+      "status": "按状态筛选",
+      "sort": "排序方式",
+      "clear": "清除筛选"
+    },
+    "sort": {
+      "next_due": "下次到期",
+      "recent": "最近学习",
+      "added": "最近添加",
+      "wrong_most": "错误最多"
+    },
+    "pagination": {
+      "showing": "显示 {start}-{end}，共 {total} 个单词",
+      "previous": "上一页",
+      "next": "下一页"
+    }
   },
   "market": {
     "title": "字典市场",

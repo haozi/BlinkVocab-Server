@@ -82,8 +82,36 @@
   },
   "wordDetail": {
     "title": "Word Detail",
-    "wordId": "Word ID: {wordId}",
-    "comingSoon": "Word detail page will be implemented in S40d"
+    "errorLoading": "Failed to load word details. Please try again later.",
+    "dictionaries": "Dictionaries",
+    "definitions": "Definitions",
+    "progress": {
+      "title": "Learning Progress",
+      "notStarted": "You haven't started learning this word yet.",
+      "status": "Status",
+      "stage": "Stage",
+      "nextDue": "Next Review",
+      "overdue": "Overdue",
+      "statusValues": {
+        "new": "New",
+        "learning": "Learning",
+        "review": "Review",
+        "mastered": "Mastered",
+        "ignored": "Ignored"
+      }
+    },
+    "timeline": {
+      "title": "Learning Timeline",
+      "noEvents": "No learning events yet.",
+      "eventTypes": {
+        "added_manual": "Added manually",
+        "added_by_dictionary": "Added from dictionary",
+        "view": "Viewed",
+        "correct": "Answered correctly",
+        "incorrect": "Answered incorrectly",
+        "skip": "Skipped"
+      }
+    }
   },
   "user": {
     "devMode": "Dev User",

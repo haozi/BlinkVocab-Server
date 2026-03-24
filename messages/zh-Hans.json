@@ -82,8 +82,36 @@
   },
   "wordDetail": {
     "title": "单词详情",
-    "wordId": "单词 ID: {wordId}",
-    "comingSoon": "单词详情页将在 S40d 中实现"
+    "errorLoading": "加载单词详情失败，请稍后重试。",
+    "dictionaries": "所属字典",
+    "definitions": "释义",
+    "progress": {
+      "title": "学习进度",
+      "notStarted": "您还没有开始学习这个单词。",
+      "status": "状态",
+      "stage": "阶段",
+      "nextDue": "下次复习",
+      "overdue": "逾期",
+      "statusValues": {
+        "new": "新单词",
+        "learning": "学习中",
+        "review": "复习中",
+        "mastered": "已掌握",
+        "ignored": "已忽略"
+      }
+    },
+    "timeline": {
+      "title": "学习时间线",
+      "noEvents": "还没有学习记录。",
+      "eventTypes": {
+        "added_manual": "手动添加",
+        "added_by_dictionary": "从字典添加",
+        "view": "查看",
+        "correct": "回答正确",
+        "incorrect": "回答错误",
+        "skip": "跳过"
+      }
+    }
   },
   "user": {
     "devMode": "开发用户",
